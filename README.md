@@ -30,9 +30,7 @@ This repository contains the client-side implementation of the Personal Finance 
 
 ---
 
-## Assignment Requirements Checklist
-
-Here is a map of the assignment criteria to their specific implementations in the codebase:
+## Assignment Requirements Completed
 
 ### 1. UI Implementation
 * **Component-Based Layouts**: The UI is split into reusable layouts under `src/components/`:
