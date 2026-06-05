@@ -169,7 +169,7 @@ export default function Markets({ brand }) {
                 tickFormatter={(tick) => formatCurrency(tick)}
               />
               <Tooltip 
-                formatter={(value) => [formatCurrency(value), null]}
+                formatter={(value) => [formatCurrency(value), 'Value']}
                 contentStyle={{ 
                   backgroundColor: 'var(--bg-secondary)', 
                   borderColor: 'var(--border-color)',
