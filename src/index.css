@@ -118,7 +118,7 @@
 }
 
 /* Dark Mode overrides: Editorial Theme */
-.dark.brand-editorial {
+.dark .brand-editorial {
   --bg-primary: #05070c;
   --bg-secondary: #0b0e17;
   --bg-tertiary: #101422;
