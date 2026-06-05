@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { TrendingUp, AlertCircle, ArrowUpRight, ArrowDownRight, Compass } from 'lucide-react';
 import { mockFinancialData } from '../data/mockData';
 import { useAnalytics } from '../hooks/useAnalytics';
+
+// Reusable UI components
+import Card from '../components/common/Card';
+import RadialGauge from '../components/common/RadialGauge';
 
 export default function Markets({ brand }) {
   const { trackEvent } = useAnalytics();
@@ -35,7 +38,7 @@ export default function Markets({ brand }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
       
       {/* Top Banner (Active Signal) */}
-      <div className="fin-card markets-top-card" style={{ gap: 'var(--spacing-lg)' }}>
+      <Card className="fin-card markets-top-card" style={{ gap: 'var(--spacing-lg)' }}>
         <div>
           <div className="flex-align-center" style={{ gap: '6px', marginBottom: 'var(--spacing-sm)' }}>
             <span className="badge badge-info">Active Signal</span>
@@ -67,48 +70,22 @@ export default function Markets({ brand }) {
           }}
         >
           <span className="metric-header" style={{ marginBottom: 'var(--spacing-sm)' }}>Sentiment Index</span>
-          <div style={{ position: 'relative', width: '100px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {/* Custom Circular SVG ring */}
-            <svg width="100" height="100" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="40" stroke="var(--border-color)" strokeWidth="8" fill="transparent" />
-              <circle 
-                cx="50" 
-                cy="50" 
-                r="40" 
-                stroke="var(--primary-blue)" 
-                strokeWidth="8" 
-                fill="transparent" 
-                strokeDasharray="251.2" 
-                strokeDashoffset={251.2 - (251.2 * portfolio.sentiment.score) / 100} 
-                strokeLinecap="round"
-                transform="rotate(-90 50 50)"
-              />
-            </svg>
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
-            }}>
-              <span style={{ fontSize: '1.4rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>
-                {portfolio.sentiment.score}
-              </span>
-              <span style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent-green)' }}>
-                {portfolio.sentiment.label}
-              </span>
-            </div>
-          </div>
+          <RadialGauge
+            score={portfolio.sentiment.score}
+            label={portfolio.sentiment.label}
+            color="var(--primary-blue)"
+            size={100}
+            strokeWidth={8}
+            labelColor="var(--accent-green)"
+          />
           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px', textAlign: 'center' }}>
             Retail investors are showing strong accumulation signals.
           </span>
         </div>
-      </div>
+      </Card>
 
       {/* Main Chart Card (Portfolio Velocity) */}
-      <div className="fin-card">
+      <Card className="fin-card">
         <div className="flex-between" style={{ marginBottom: 'var(--spacing-md)', flexWrap: 'wrap', gap: 'var(--spacing-sm)' }}>
           <div>
             <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Portfolio Velocity</h3>
@@ -204,13 +181,13 @@ export default function Markets({ brand }) {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </Card>
 
       {/* Sector Allocations & Performance */}
       <div className="markets-bottom-grid" style={{ gap: 'var(--spacing-lg)' }}>
         
         {/* Sector Allocation Breakdown */}
-        <div className="fin-card">
+        <Card className="fin-card">
           <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: 'var(--spacing-md)' }}>Sector Allocation</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
             {portfolio.sectorAllocation.map((item, idx) => (
@@ -220,10 +197,10 @@ export default function Markets({ brand }) {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Performance by Sector */}
-        <div className="fin-card">
+        <Card className="fin-card">
           <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: 'var(--spacing-md)' }}>Performance by Sector</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
             {sectors.map((sector, idx) => {
@@ -256,7 +233,7 @@ export default function Markets({ brand }) {
               );
             })}
           </div>
-        </div>
+        </Card>
 
       </div>
 

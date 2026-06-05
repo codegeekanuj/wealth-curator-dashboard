@@ -1,7 +1,12 @@
 import React from 'react';
-import { PiggyBank, Target, Sparkles, AlertCircle, TrendingDown, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight } from 'lucide-react';
 import { mockFinancialData } from '../data/mockData';
 import { useAnalytics } from '../hooks/useAnalytics';
+
+// Reusable UI components
+import Card from '../components/common/Card';
+import ProgressBar from '../components/common/ProgressBar';
+import AlertItem from '../components/common/AlertItem';
 
 export default function Budgets({ brand }) {
   const { trackEvent } = useAnalytics();
@@ -31,7 +36,7 @@ export default function Budgets({ brand }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
       
       {/* Monthly Overview Progress Card */}
-      <div className="fin-card" style={{ padding: 'var(--spacing-xl)' }}>
+      <Card className="fin-card" style={{ padding: 'var(--spacing-xl)' }}>
         <div className="flex-between" style={{ marginBottom: 'var(--spacing-md)' }}>
           <div>
             <span className="metric-header">TOTAL BUDGET VELOCITY</span>
@@ -54,30 +59,26 @@ export default function Budgets({ brand }) {
         </div>
 
         {/* Progress Bar */}
-        <div style={{ width: '100%', height: '14px', backgroundColor: 'var(--bg-tertiary)', borderRadius: '7px', overflow: 'hidden', marginBottom: 'var(--spacing-sm)' }}>
-          <div 
-            style={{ 
-              width: `${percentSpent}%`, 
-              height: '100%', 
-              background: 'var(--primary-gradient)',
-              borderRadius: '7px',
-              transition: 'width 1s ease-in-out'
-            }}
-          />
-        </div>
+        <ProgressBar
+          percentage={percentSpent}
+          color="var(--primary-gradient)"
+          height="14px"
+          borderRadius="7px"
+          style={{ marginBottom: 'var(--spacing-sm)' }}
+        />
 
         <div className="flex-between" style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
           <span>{percentSpent.toFixed(0)}% of monthly limit reached</span>
           <span>12 days remaining in fiscal cycle</span>
         </div>
-      </div>
+      </Card>
 
       {/* Grid: Left - Categories, Right - Strategy + Alerts */}
       <div className="budget-main-grid" style={{ gap: 'var(--spacing-lg)' }}>
         
         {/* Category Limits Allocation */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
-          <div className="fin-card">
+          <Card className="fin-card">
             <div className="flex-between" style={{ marginBottom: 'var(--spacing-lg)' }}>
               <h3 style={{ fontSize: '1.05rem', fontWeight: 700 }}>Category Allocation</h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--primary-blue)', fontWeight: 600, cursor: 'pointer' }}>
@@ -89,7 +90,7 @@ export default function Budgets({ brand }) {
               {budgets.categories.map((cat) => {
                 const ratio = (cat.spent / cat.limit) * 100;
                 return (
-                  <div 
+                  <Card 
                     key={cat.id} 
                     className="fin-card hover-lift"
                     style={{ 
@@ -117,28 +118,27 @@ export default function Budgets({ brand }) {
                       </span>
                     </div>
 
-                    <div style={{ width: '100%', height: '6px', backgroundColor: 'var(--border-color)', borderRadius: '3px', overflow: 'hidden', marginTop: 'var(--spacing-xs)' }}>
-                      <div 
-                        style={{ 
-                          width: `${Math.min(ratio, 100)}%`, 
-                          height: '100%', 
-                          backgroundColor: cat.color,
-                          borderRadius: '3px'
-                        }}
-                      />
-                    </div>
-                  </div>
+                    <ProgressBar 
+                      percentage={ratio} 
+                      color={cat.color} 
+                      height="6px" 
+                      borderRadius="3px" 
+                      trackColor="var(--border-color)" 
+                      transition="none" 
+                      style={{ marginTop: 'var(--spacing-xs)' }} 
+                    />
+                  </Card>
                 );
               })}
             </div>
-          </div>
+          </Card>
         </div>
 
         {/* Right - AI Strategy Recommendation & Alerts */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
           
           {/* Budget Strategy Card */}
-          <div className="fin-card hover-lift" style={{ backgroundColor: 'var(--bg-secondary)', borderLeft: '4px solid var(--primary-blue)' }}>
+          <Card className="fin-card hover-lift" style={{ backgroundColor: 'var(--bg-secondary)', borderLeft: '4px solid var(--primary-blue)' }}>
             <div className="flex-align-center" style={{ gap: '6px', marginBottom: 'var(--spacing-sm)' }}>
               <Sparkles size={16} style={{ color: 'var(--primary-blue)' }} />
               <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-blue)', textTransform: 'uppercase' }}>
@@ -161,63 +161,39 @@ export default function Budgets({ brand }) {
               <span>Apply Strategy</span>
               <ArrowRight size={12} />
             </button>
-          </div>
+          </Card>
 
           {/* Budget Alerts Feed */}
-          <div className="fin-card">
+          <Card className="fin-card">
             <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 'var(--spacing-md)' }}>Recent Alerts</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
               
-              {/* Alert 1 */}
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                <div style={{ padding: '6px', borderRadius: '50%', backgroundColor: 'var(--color-critical-bg)', color: 'var(--color-critical)' }}>
-                  <AlertCircle size={14} />
-                </div>
-                <div>
-                  <div className="flex-between">
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>Entertainment Threshold</span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>2h ago</span>
-                  </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                    Limit is at 90% ($450/$500). Pause non-essential bookings.
-                  </p>
-                </div>
-              </div>
+              <AlertItem
+                title="Entertainment Threshold"
+                description="Limit is at 90% ($450/$500). Pause non-essential bookings."
+                time="2h ago"
+                type="critical"
+                variant="icon"
+              />
 
-              {/* Alert 2 */}
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                <div style={{ padding: '6px', borderRadius: '50%', backgroundColor: 'var(--color-warning-bg)', color: 'var(--accent-orange)' }}>
-                  <AlertCircle size={14} />
-                </div>
-                <div>
-                  <div className="flex-between">
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>Dining Anomaly</span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Yesterday</span>
-                  </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                    Spending at 'The Oak Room' is 20% higher than your average.
-                  </p>
-                </div>
-              </div>
+              <AlertItem
+                title="Dining Anomaly"
+                description="Spending at 'The Oak Room' is 20% higher than your average."
+                time="Yesterday"
+                type="warning"
+                variant="icon"
+              />
 
-              {/* Alert 3 */}
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                <div style={{ padding: '6px', borderRadius: '50%', backgroundColor: 'var(--color-success-bg)', color: 'var(--accent-green)' }}>
-                  <Target size={14} />
-                </div>
-                <div>
-                  <div className="flex-between">
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>Subscription Renewed</span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>2 days ago</span>
-                  </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                    'Bloomberg Terminal' subscription was successfully auto-paid.
-                  </p>
-                </div>
-              </div>
+              <AlertItem
+                title="Subscription Renewed"
+                description="'Bloomberg Terminal' subscription was successfully auto-paid."
+                time="2 days ago"
+                type="success"
+                variant="icon"
+              />
 
             </div>
-          </div>
+          </Card>
 
         </div>
 

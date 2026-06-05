@@ -1,20 +1,21 @@
 import React, { useState, useMemo } from 'react';
-import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 import { 
-  ArrowUpRight, 
-  ArrowDownRight, 
   Sparkles, 
   Download, 
   AlertTriangle, 
-  Filter, 
-  ListFilter,
-  CheckCircle,
-  Info
+  ListFilter
 } from 'lucide-react';
 import { useFetch } from '../hooks/useFetch';
 import { mockFinancialData } from '../data/mockData';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { useDebounce } from '../hooks/useDebounce';
+
+// Reusable UI components
+import Card from '../components/common/Card';
+import MetricCard from '../components/common/MetricCard';
+import ProgressBar from '../components/common/ProgressBar';
+import AlertItem from '../components/common/AlertItem';
+import TransactionItem from '../components/common/TransactionItem';
 
 // Mock sparkline data
 const sparkDataNetWorth = [
@@ -104,15 +105,7 @@ export default function Dashboard({ brand, searchQuery }) {
     document.body.removeChild(link);
   };
 
-  // Helper for alert backgrounds
-  const getAlertStyle = (type) => {
-    switch (type) {
-      case 'critical': return { bg: 'var(--color-critical-bg)', border: 'var(--color-critical-border)', color: 'var(--color-critical)' };
-      case 'warning': return { bg: 'var(--color-warning-bg)', border: 'var(--color-warning-border)', color: 'var(--color-warning)' };
-      case 'success': return { bg: 'var(--color-success-bg)', border: 'var(--color-success-border)', color: 'var(--accent-green)' };
-      default: return { bg: 'var(--color-info-bg)', border: 'var(--color-info-border)', color: 'var(--primary-blue)' };
-    }
-  };
+
 
   // Display conditions
   if (loading) {
@@ -206,88 +199,34 @@ export default function Dashboard({ brand, searchQuery }) {
         }}
       >
         {/* Net Worth */}
-        <div className="fin-card">
-          <span className="metric-header">Total Net Worth</span>
-          <div className="flex-between" style={{ alignItems: 'flex-end', marginTop: 'var(--spacing-sm)' }}>
-            <div>
-              <div className="metric-value">{formatCurrency(netWorthVal)}</div>
-              <div className="flex-align-center" style={{ color: 'var(--accent-green)', fontSize: '0.85rem', marginTop: '4px' }}>
-                <ArrowUpRight size={14} />
-                <span>{data.summary.netWorthTrend}</span>
-              </div>
-            </div>
-            {/* Sparkline */}
-            <div style={{ width: '80px', height: '40px' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={sparkDataNetWorth}>
-                  <defs>
-                    <linearGradient id="colorNetWorth" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--primary-blue)" stopOpacity={0.4}/>
-                      <stop offset="95%" stopColor="var(--primary-blue)" stopOpacity={0.0}/>
-                    </linearGradient>
-                  </defs>
-                  <Area type="monotone" dataKey="value" stroke="var(--primary-blue)" strokeWidth={2} fillOpacity={1} fill="url(#colorNetWorth)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
+        <MetricCard
+          title="Total Net Worth"
+          value={formatCurrency(netWorthVal)}
+          trendText={data.summary.netWorthTrend}
+          sparklineData={sparkDataNetWorth}
+          sparklineColor="var(--primary-blue)"
+          gradientId="colorNetWorth"
+        />
 
         {/* Spending */}
-        <div className="fin-card">
-          <span className="metric-header">Monthly Spending</span>
-          <div className="flex-between" style={{ alignItems: 'flex-end', marginTop: 'var(--spacing-sm)' }}>
-            <div>
-              <div className="metric-value">{formatCurrency(spendingVal)}</div>
-              <div className="flex-align-center" style={{ color: 'var(--accent-orange)', fontSize: '0.85rem', marginTop: '4px' }}>
-                <ArrowUpRight size={14} />
-                <span>{data.summary.spendingTrend}</span>
-              </div>
-            </div>
-            {/* Sparkline */}
-            <div style={{ width: '80px', height: '40px' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={sparkDataSpending}>
-                  <defs>
-                    <linearGradient id="colorSpending" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--accent-orange)" stopOpacity={0.4}/>
-                      <stop offset="95%" stopColor="var(--accent-orange)" stopOpacity={0.0}/>
-                    </linearGradient>
-                  </defs>
-                  <Area type="monotone" dataKey="value" stroke="var(--accent-orange)" strokeWidth={2} fillOpacity={1} fill="url(#colorSpending)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
+        <MetricCard
+          title="Monthly Spending"
+          value={formatCurrency(spendingVal)}
+          trendText={data.summary.spendingTrend}
+          sparklineData={sparkDataSpending}
+          sparklineColor="var(--accent-orange)"
+          gradientId="colorSpending"
+        />
 
         {/* Savings */}
-        <div className="fin-card">
-          <span className="metric-header">Total Savings</span>
-          <div className="flex-between" style={{ alignItems: 'flex-end', marginTop: 'var(--spacing-sm)' }}>
-            <div>
-              <div className="metric-value">{formatCurrency(savingsVal)}</div>
-              <div className="flex-align-center" style={{ color: 'var(--accent-green)', fontSize: '0.85rem', marginTop: '4px' }}>
-                <ArrowUpRight size={14} />
-                <span>{data.summary.savingsTrend}</span>
-              </div>
-            </div>
-            {/* Sparkline */}
-            <div style={{ width: '80px', height: '40px' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={sparkDataSavings}>
-                  <defs>
-                    <linearGradient id="colorSavings" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--accent-green)" stopOpacity={0.4}/>
-                      <stop offset="95%" stopColor="var(--accent-green)" stopOpacity={0.0}/>
-                    </linearGradient>
-                  </defs>
-                  <Area type="monotone" dataKey="value" stroke="var(--accent-green)" strokeWidth={2} fillOpacity={1} fill="url(#colorSavings)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
+        <MetricCard
+          title="Total Savings"
+          value={formatCurrency(savingsVal)}
+          trendText={data.summary.savingsTrend}
+          sparklineData={sparkDataSavings}
+          sparklineColor="var(--accent-green)"
+          gradientId="colorSavings"
+        />
       </div>
 
       {/* Main Grid: Left column (AI + Alerts), Right column (Composition + Activity) */}
@@ -297,7 +236,7 @@ export default function Dashboard({ brand, searchQuery }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
           
           {/* AI Strategy Spotlight */}
-          <div className="fin-card fin-card-gradient hover-lift" style={{ padding: 'var(--spacing-xl)' }}>
+          <Card className="fin-card fin-card-gradient hover-lift" style={{ padding: 'var(--spacing-xl)' }}>
             <div className="flex-between" style={{ marginBottom: 'var(--spacing-md)' }}>
               <div className="flex-align-center" style={{ gap: '8px' }}>
                 <Sparkles size={20} style={{ color: 'white' }} />
@@ -328,51 +267,30 @@ export default function Dashboard({ brand, searchQuery }) {
                 Review Audit
               </button>
             </div>
-          </div>
+          </Card>
 
           {/* Active Alerts */}
-          <div className="fin-card">
+          <Card className="fin-card">
             <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: 'var(--spacing-md)' }}>
               Active Alerts
             </h3>
             <div className="alert-list">
-              {data.activeAlerts.slice(0, 3).map((alert) => {
-                const styles = getAlertStyle(alert.type);
-                return (
-                  <div 
-                    key={alert.id} 
-                    className="alert-item" 
-                    style={{ 
-                      backgroundColor: styles.bg, 
-                      borderColor: styles.border,
-                      borderWidth: '1px',
-                      borderStyle: 'solid'
-                    }}
-                  >
-                    <div className="alert-body">
-                      <div className="flex-between">
-                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: styles.color, textTransform: 'uppercase' }}>
-                          {alert.category}
-                        </span>
-                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                          {alert.time}
-                        </span>
-                      </div>
-                      <h4 style={{ fontSize: '0.9rem', fontWeight: 600, marginTop: '2px', color: 'var(--text-primary)' }}>
-                        {alert.title}
-                      </h4>
-                      <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                        {alert.description}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+              {data.activeAlerts.slice(0, 3).map((alert) => (
+                <AlertItem
+                  key={alert.id}
+                  title={alert.title}
+                  category={alert.category}
+                  description={alert.description}
+                  time={alert.time}
+                  type={alert.type}
+                  variant="border"
+                />
+              ))}
             </div>
-          </div>
+          </Card>
 
           {/* Spending Composition */}
-          <div className="fin-card">
+          <Card className="fin-card">
             <div className="flex-between" style={{ marginBottom: 'var(--spacing-md)' }}>
               <h3 style={{ fontSize: '1.05rem', fontWeight: 700 }}>Spending Composition</h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--primary-blue)', fontWeight: 600, cursor: 'pointer' }}>
@@ -387,9 +305,11 @@ export default function Dashboard({ brand, searchQuery }) {
                     <span style={{ color: 'var(--text-secondary)' }}>{comp.name}</span>
                     <span style={{ fontWeight: 700 }}>{comp.percentage}%</span>
                   </div>
-                  <div style={{ width: '100%', height: '8px', backgroundColor: 'var(--bg-tertiary)', borderRadius: '4px', overflow: 'hidden' }}>
-                    <div style={{ width: `${comp.percentage}%`, height: '100%', backgroundColor: comp.color, borderRadius: '4px' }}></div>
-                  </div>
+                  <ProgressBar 
+                    percentage={comp.percentage} 
+                    color={comp.color} 
+                    height="8px"
+                  />
                 </div>
               ))}
             </div>
@@ -408,7 +328,7 @@ export default function Dashboard({ brand, searchQuery }) {
             >
               <strong>EDITOR'S NOTE:</strong> "Your discretionary spending on Dining & Leisure is down 12% this month. This surplus has been automatically moved to your 'S&P 500' bucket."
             </div>
-          </div>
+          </Card>
 
         </div>
 
@@ -416,7 +336,7 @@ export default function Dashboard({ brand, searchQuery }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
           
           {/* Recent Activity */}
-          <div className="fin-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <Card className="fin-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             
             {/* Header with search filters & export */}
             <div className="flex-between" style={{ marginBottom: 'var(--spacing-md)', flexWrap: 'wrap', gap: 'var(--spacing-sm)' }}>
@@ -469,52 +389,21 @@ export default function Dashboard({ brand, searchQuery }) {
                   </p>
                 </div>
               ) : (
-                filteredTransactions.map((tx) => {
-                  const isIncome = tx.amount > 0;
-                  const amtStr = isIncome ? `+${formatCurrency(tx.amount)}` : formatCurrency(tx.amount);
-                  
-                  return (
-                    <div 
-                      key={tx.id}
-                      className="flex-between"
-                      style={{
-                        padding: '12px var(--spacing-md)',
-                        borderRadius: 'var(--radius-md)',
-                        border: '1px solid var(--border-color)',
-                        backgroundColor: 'var(--bg-secondary)',
-                        transition: 'var(--transition-smooth)'
-                      }}
-                    >
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                        <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>{tx.merchant}</span>
-                        <div className="flex-align-center" style={{ gap: '6px' }}>
-                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{tx.date}</span>
-                          <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>•</span>
-                          <span style={{ fontSize: '0.75rem', color: 'var(--primary-blue)', fontWeight: 500 }}>{tx.category}</span>
-                        </div>
-                      </div>
-                      
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                        <span className={`badge badge-${tx.status.toLowerCase()}`} style={{ fontSize: '0.65rem' }}>
-                          {tx.status}
-                        </span>
-                        <span 
-                          style={{ 
-                            fontSize: '0.9rem', 
-                            fontWeight: 700, 
-                            color: isIncome ? 'var(--accent-green)' : 'var(--text-primary)' 
-                          }}
-                        >
-                          {amtStr}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })
+                filteredTransactions.map((tx) => (
+                  <TransactionItem
+                    key={tx.id}
+                    merchant={tx.merchant}
+                    category={tx.category}
+                    date={tx.date}
+                    amount={tx.amount}
+                    status={tx.status}
+                    formatCurrency={formatCurrency}
+                  />
+                ))
               )}
             </div>
 
-          </div>
+          </Card>
 
         </div>
 

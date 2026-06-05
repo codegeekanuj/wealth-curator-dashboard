@@ -1,7 +1,11 @@
 import React from 'react';
-import { Sparkles, ArrowRight, ShieldAlert, ArrowUpRight, TrendingUp, Landmark } from 'lucide-react';
+import { ShieldAlert, TrendingUp, Landmark } from 'lucide-react';
 import { mockFinancialData } from '../data/mockData';
 import { useAnalytics } from '../hooks/useAnalytics';
+
+// Reusable UI components
+import Card from '../components/common/Card';
+import RadialGauge from '../components/common/RadialGauge';
 
 export default function Insights({ brand }) {
   const { trackEvent } = useAnalytics();
@@ -25,7 +29,7 @@ export default function Insights({ brand }) {
       <div className="insights-top-grid" style={{ gap: 'var(--spacing-lg)' }}>
         
         {/* Signal Body Card */}
-        <div className="fin-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <Card className="fin-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div className="flex-between" style={{ marginBottom: 'var(--spacing-md)' }}>
               <span className="badge badge-danger">Active Signal: Rebalance Priority</span>
@@ -55,10 +59,10 @@ export default function Insights({ brand }) {
               Dismiss
             </button>
           </div>
-        </div>
+        </Card>
 
         {/* Small Confidence Gauge Card */}
-        <div 
+        <Card 
           className="fin-card" 
           style={{ 
             display: 'flex', 
@@ -69,44 +73,23 @@ export default function Insights({ brand }) {
             textAlign: 'center'
           }}
         >
-          <div style={{ position: 'relative', width: '120px', height: '120px' }}>
-            <svg width="120" height="120" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="40" stroke="var(--border-color)" strokeWidth="6" fill="transparent" />
-              <circle 
-                cx="50" 
-                cy="50" 
-                r="40" 
-                stroke="var(--accent-green)" 
-                strokeWidth="6" 
-                fill="transparent" 
-                strokeDasharray="251.2" 
-                strokeDashoffset={251.2 - (251.2 * 88) / 100} 
-                strokeLinecap="round"
-                transform="rotate(-90 50 50)"
-              />
-            </svg>
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
-            }}>
-              <span style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)' }}>88%</span>
-              <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Confidence</span>
-            </div>
-          </div>
+          <RadialGauge
+            score={88}
+            label="Confidence"
+            color="var(--accent-green)"
+            size={120}
+            strokeWidth={6}
+            showPercentageSign={true}
+          />
           <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 'var(--spacing-md)' }}>
             High alignment with your target asset distribution and yield goals.
           </span>
-        </div>
+        </Card>
 
       </div>
 
       {/* Cash Flow Intelligence Section */}
-      <div className="fin-card">
+      <Card className="fin-card">
         <div className="flex-between" style={{ marginBottom: 'var(--spacing-lg)' }}>
           <div>
             <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Cash Flow Intelligence</h3>
@@ -120,7 +103,7 @@ export default function Insights({ brand }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-lg)' }}>
           
           {/* Item 1 */}
-          <div 
+          <Card 
             className="hover-lift"
             style={{ 
               padding: 'var(--spacing-lg)', 
@@ -148,10 +131,10 @@ export default function Insights({ brand }) {
             <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
               You spent 12% less on dining this month. Transfer $450 to your "Growth" bucket to stay ahead of your 2024 goal.
             </p>
-          </div>
+          </Card>
 
           {/* Item 2 */}
-          <div 
+          <Card 
             className="hover-lift"
             style={{ 
               padding: 'var(--spacing-lg)', 
@@ -179,10 +162,10 @@ export default function Insights({ brand }) {
             <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
               We detected two overlapping streaming subscriptions. Canceling "Media+" would save you $180 annually.
             </p>
-          </div>
+          </Card>
 
           {/* Item 3 */}
-          <div 
+          <Card 
             className="hover-lift"
             style={{ 
               padding: 'var(--spacing-lg)', 
@@ -210,10 +193,10 @@ export default function Insights({ brand }) {
             <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
               3 assets in your legacy portfolio are eligible for tax-loss harvesting. Potential benefit: $2,100.
             </p>
-          </div>
+          </Card>
 
         </div>
-      </div>
+      </Card>
 
     </div>
   );
