@@ -71,7 +71,7 @@ export default function Header({
       {/* Center Search / Tabs (Editorial layout style) */}
       <div className="flex-align-center" style={{ gap: 'var(--spacing-lg)' }}>
         {/* Search Bar */}
-        <div style={{ position: 'relative' }}>
+        <div className="header-search-container" style={{ position: 'relative' }}>
           <Search
             size={16}
             style={{
@@ -105,7 +105,7 @@ export default function Header({
         {/* Brand Selector Button */}
         <button
           onClick={toggleBrand}
-          className="btn btn-sm btn-secondary flex-align-center"
+          className="btn btn-sm btn-secondary flex-align-center header-brand-btn"
           style={{ height: '36px', fontSize: '0.8rem', gap: '6px' }}
           title={`Switch to ${brand === 'proton' ? 'Editorial' : 'Proton'} layout`}
         >
@@ -118,7 +118,7 @@ export default function Header({
         {/* Theme Toggle Button */}
         <button
           onClick={toggleTheme}
-          className="btn btn-sm"
+          className="btn btn-sm header-theme-btn"
           style={{
             height: '36px',
             width: '36px',
@@ -166,7 +166,7 @@ export default function Header({
         {/* Settings */}
         <button
           onClick={() => trackEvent('cta_click', { button_name: 'settings' })}
-          className="btn btn-sm"
+          className="btn btn-sm header-settings-btn"
           style={{
             height: '36px',
             width: '36px',

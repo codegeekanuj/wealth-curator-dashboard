@@ -63,7 +63,7 @@ export default function Markets({ brand }) {
           }}
         >
           <span className="metric-header" style={{ marginBottom: 'var(--spacing-sm)' }}>Sentiment Index</span>
-          <div style={{ position: 'relative', width: '100px', height: '100px', display: 'flex', alignItems: 'center', justifyCenter: 'center' }}>
+          <div style={{ position: 'relative', width: '100px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {/* Custom Circular SVG ring */}
             <svg width="100" height="100" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="40" stroke="var(--border-color)" strokeWidth="8" fill="transparent" />

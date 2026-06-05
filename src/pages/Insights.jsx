@@ -25,7 +25,7 @@ export default function Insights({ brand }) {
       <div className="insights-top-grid" style={{ gap: 'var(--spacing-lg)' }}>
         
         {/* Signal Body Card */}
-        <div className="fin-card" style={{ display: 'flex', flexDirection: 'column', justifyBetween: 'space-between' }}>
+        <div className="fin-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div className="flex-between" style={{ marginBottom: 'var(--spacing-md)' }}>
               <span className="badge badge-danger">Active Signal: Rebalance Priority</span>
