@@ -8,7 +8,11 @@ export default function Budgets({ brand }) {
   const { budgets } = mockFinancialData;
 
   const formatCurrency = (val) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+    const num = Number(val);
+    if (val === undefined || val === null || isNaN(num)) {
+      return '$0';
+    }
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
   };
 
   const getStatusBadgeClass = (status) => {
